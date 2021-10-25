@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DotNetCoreDecorators;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Domain;
+using MyJetWallet.Sdk.ServiceBus;
 using Serilog;
 using Service.AssetsDictionary.Client;
 using SimpleTrading.Abstraction.BidAsk;
@@ -15,13 +16,13 @@ namespace Service.PriceToCandle.Job
     public class CandlePriceWriter
     {
         private readonly ISubscriber<IReadOnlyList<BidAsk>> _subscriber;
-        private readonly IPublisher<IBidAsk> _candlePublisher;
+        private readonly IServiceBusPublisher<SimpleTrading.ServiceBus.Models.BidAskServiceBusModel> _candlePublisher;
         private readonly ISpotInstrumentDictionaryClient _instrumentDictionaryClient;
         private readonly ILogger<CandlePriceWriter> _logger;
 
         public CandlePriceWriter(
             ISubscriber<IReadOnlyList<MyJetWallet.Domain.Prices.BidAsk>> subscriber,
-            IPublisher<SimpleTrading.Abstraction.BidAsk.IBidAsk> candlePublisher,
+            IServiceBusPublisher<SimpleTrading.ServiceBus.Models.BidAskServiceBusModel> candlePublisher,
             ISpotInstrumentDictionaryClient instrumentDictionaryClient,
             ILogger<CandlePriceWriter> logger
             )
@@ -44,13 +45,13 @@ namespace Service.PriceToCandle.Job
                 .Select(e => e.First())
                 .ToDictionary(e => $"{e.ConvertSourceExchange}||{e.ConvertSourceMarket}");
             
-            var list = new List<SimpleTrading.Abstraction.BidAsk.IBidAsk>();
+            var list = new List<SimpleTrading.ServiceBus.Models.BidAskServiceBusModel>();
             
             foreach (var item in data)
             {
                 if (instruments.ContainsKey($"{item.LiquidityProvider}||{item.Id}"))
                 {
-                    list.Add((SimpleTrading.Abstraction.BidAsk.IBidAsk) new SimpleTrading.Abstraction.BidAsk.BidAsk()
+                    list.Add( new SimpleTrading.ServiceBus.Models.BidAskServiceBusModel()
                     {
                         Id = item.Id,
                         DateTime = item.DateTime,
@@ -62,9 +63,7 @@ namespace Service.PriceToCandle.Job
             
             try
             {
-                var taskList = list.Select(e => _candlePublisher.PublishAsync(e).AsTask()).ToArray();
-
-                await Task.WhenAll(taskList);
+                await _candlePublisher.PublishAsync(list);
             }
             catch (Exception ex)
             {

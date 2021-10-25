@@ -7,6 +7,7 @@ using MyJetWallet.Sdk.ServiceBus;
 using MyServiceBus.Abstractions;
 using Service.AssetsDictionary.Client;
 using Service.PriceToCandle.Job;
+using SimpleTrading.ServiceBus.Models;
 using SimpleTrading.ServiceBus.PublisherSubscriber.BidAsk;
 
 namespace Service.PriceToCandle.Modules
@@ -19,14 +20,9 @@ namespace Service.PriceToCandle.Modules
                 Program.ReloadedSettings(e => e.ServiceBusHostPort),
                 Program.LogFactory);
 
-            var candlePublisher = new BidAskMyServiceBusPublisher(serviceBusClient, "spot-bidask");
-
-            builder
-                .RegisterInstance(candlePublisher)
-                .As<IPublisher<SimpleTrading.Abstraction.BidAsk.IBidAsk>>()
-                .SingleInstance();
+            builder.RegisterMyServiceBusPublisher<SimpleTrading.ServiceBus.Models.BidAskServiceBusModel>(serviceBusClient, "spot-bidask", false);
             
-            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection);
+            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection, 1000);
 
             var noSqlClient = builder.CreateNoSqlClient(Program.ReloadedSettings(e => e.MyNoSqlReaderHostPort));
             
