@@ -14,10 +14,10 @@ namespace Service.PriceToCandle.Settings
         [YamlProperty("PriceToCandle.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
         
-        [YamlProperty("IndexPrices.ServiceBusHostPort")]
+        [YamlProperty("PriceToCandle.ServiceBusHostPort")]
         public string ServiceBusHostPort { get; set; }
         
-        [YamlProperty("IndexPrices.MyNoSqlReaderHostPort")]
+        [YamlProperty("PriceToCandle.MyNoSqlReaderHostPort")]
         public string MyNoSqlReaderHostPort { get; set; }
     }
 }
