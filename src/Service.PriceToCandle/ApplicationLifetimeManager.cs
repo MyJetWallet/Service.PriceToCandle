@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Threading;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.NoSql;
 using MyJetWallet.Sdk.Service;
@@ -34,6 +35,9 @@ namespace Service.PriceToCandle
         protected override void OnStopping()
         {
             _logger.LogInformation("OnStopping has been called.");
+            _myServiceBusTcpClient.Stop();
+            Thread.Sleep(5000);
+            _myNoSqlClientLifeTime.Stop();
         }
 
         protected override void OnStopped()

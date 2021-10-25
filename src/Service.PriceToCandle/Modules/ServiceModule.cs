@@ -6,6 +6,7 @@ using MyJetWallet.Sdk.NoSql;
 using MyJetWallet.Sdk.ServiceBus;
 using MyServiceBus.Abstractions;
 using Service.AssetsDictionary.Client;
+using Service.PriceToCandle.Job;
 using SimpleTrading.ServiceBus.PublisherSubscriber.BidAsk;
 
 namespace Service.PriceToCandle.Modules
@@ -30,6 +31,8 @@ namespace Service.PriceToCandle.Modules
             var noSqlClient = builder.CreateNoSqlClient(Program.ReloadedSettings(e => e.MyNoSqlReaderHostPort));
             
             builder.RegisterAssetsDictionaryClients(noSqlClient);
+
+            builder.RegisterType<CandlePriceWriter>().SingleInstance().AutoActivate();
         }
     }
 }
