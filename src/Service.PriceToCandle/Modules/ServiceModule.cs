@@ -25,7 +25,7 @@ namespace Service.PriceToCandle.Modules
                 .As<IPublisher<SimpleTrading.Abstraction.BidAsk.IBidAsk>>()
                 .SingleInstance();
             
-            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "IndexPrices", TopicQueueType.PermanentWithSingleConnection);
+            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection);
 
             var noSqlClient = builder.CreateNoSqlClient(Program.ReloadedSettings(e => e.MyNoSqlReaderHostPort));
             
