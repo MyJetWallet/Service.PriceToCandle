@@ -49,11 +49,11 @@ namespace Service.PriceToCandle.Job
             
             foreach (var item in data)
             {
-                if (instruments.ContainsKey($"{item.LiquidityProvider}||{item.Id}"))
+                if (instruments.TryGetValue($"{item.LiquidityProvider}||{item.Id}", out var instr))
                 {
                     list.Add( new SimpleTrading.ServiceBus.Models.BidAskServiceBusModel()
                     {
-                        Id = item.Id,
+                        Id = instr.Symbol,
                         DateTime = item.DateTime,
                         Ask = (double) item.Ask,
                         Bid = (double) item.Bid
