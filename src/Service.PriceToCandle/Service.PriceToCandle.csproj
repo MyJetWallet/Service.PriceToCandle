@@ -25,7 +25,7 @@
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
     <PackageReference Include="MySettingsReader" Version="1.2.1" />
     <PackageReference Include="MyJetWallet.Sdk.ServiceBus" Version="2.1.0" />
-    <PackageReference Include="SimpleTrading.ServiceBus" Version="4.0.15" />
+    <PackageReference Include="SimpleTrading.ServiceBus" Version="4.0.16" />
   </ItemGroup>
 
   <ItemGroup>
