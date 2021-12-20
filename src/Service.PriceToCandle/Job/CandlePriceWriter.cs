@@ -60,16 +60,19 @@ namespace Service.PriceToCandle.Job
                     });
                 }
             }
-            
-            try
+
+            if (list.Any())
             {
-                await _candlePublisher.PublishAsync(list);
+                try
+                {
+                    await _candlePublisher.PublishAsync(list);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Cannot publish prices to candle service bus");
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Cannot publish prices to candle service bus");
-            }
-            
+
             _logger.LogInformation("Publish {count} prices", list.Count);
         }
     }
