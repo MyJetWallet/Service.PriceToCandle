@@ -22,7 +22,7 @@ namespace Service.PriceToCandle.Modules
 
             builder.RegisterMyServiceBusPublisher<SimpleTrading.ServiceBus.Models.BidAskServiceBusModel>(serviceBusClient, "spot-bidask", false);
             
-            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection, 1000);
+            builder.RegisterMyServiceBusSubscriberBatch<MyJetWallet.Domain.Prices.BidAsk>(serviceBusClient, "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection, 20000);
 
             var noSqlClient = builder.CreateNoSqlClient(Program.ReloadedSettings(e => e.MyNoSqlReaderHostPort));
             
