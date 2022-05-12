@@ -26,7 +26,7 @@ namespace Service.PriceToCandle.Modules
                 "jetwallet-external-prices", "PriceToCandle", TopicQueueType.PermanentWithSingleConnection, 20000,
                 MyServiceBusTcpClientFactory.GetDeserializeExceptionHandlerLogger(Program.LogFactory, "jetwallet-external-prices"));
 
-            var noSqlClient = builder.CreateNoSqlClient(Program.ReloadedSettings(e => e.MyNoSqlReaderHostPort));
+            var noSqlClient = builder.CreateNoSqlClient(Program.Settings.MyNoSqlReaderHostPort, Program.LogFactory);
             
             builder.RegisterAssetsDictionaryClients(noSqlClient);
 
